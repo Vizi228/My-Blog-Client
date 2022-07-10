@@ -1,0 +1,24 @@
+import React from 'react';
+import styles from './UserInfo.module.scss';
+import Avatar from '@mui/material/Avatar';
+
+export const UserInfo = ({ avatarUrl, fullName, additionalText }) => {
+  return (
+    <div className={styles.root}>
+      {avatarUrl ? (
+        <img
+          className={styles.avatar}
+          src={`${process.env.REACT_APP_URL_KEY}${avatarUrl}`}
+          alt={fullName}
+        />
+      ) : (
+        <Avatar>{fullName && fullName[0]}</Avatar>
+      )}
+
+      <div className={styles.userDetails}>
+        <span className={styles.userName}>{fullName}</span>
+        <span className={styles.additional}>{additionalText}</span>
+      </div>
+    </div>
+  );
+};
