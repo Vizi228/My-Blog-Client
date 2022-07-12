@@ -1,8 +1,20 @@
 import { instance } from "..";
 
 class Post {
-  async getAllPosts() {
-    const data = await instance.get('/posts');
+  async getAllPosts(tabValue) {
+    if(!tabValue) {
+      const data = await instance.get('/posts');
+      return data
+    }
+    const data = await instance.get(`/posts/popular`);
+    return data
+  }
+  async getTagsPosts(tag, tabValue) {
+    if(!tabValue) {
+      const data = await instance.get(`/posts/tags/${tag}`);
+      return data
+    }
+    const data = await instance.get(`/posts/popular/tags/${tag}`);
     return data
   }
   async getPost(id) {
@@ -23,15 +35,14 @@ class Post {
     const data = await instance.delete(`/posts/${id}`);
     return data
   }
-  async updatePost(req) {
+  async updatePost(req, id) {
     const post = {
       title: req.title,
       text: req.text,
       imageUrl: req.imageUrl,
-      tags: req.tags.split(','),
-      user: req.userId,
+      tags: req.tags,
     }
-    const data = await instance.patch(`/posts`, post);
+    const data = await instance.patch(`/posts/${id}`, post);
     return data
   }
 }

@@ -13,12 +13,12 @@ import { store } from "./store";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
-  <BrowserRouter>
-    <Provider store={store}>
-    <CssBaseline/>
-      <ThemeProvider theme={theme}>
-        <App />
-      </ThemeProvider>
-    </Provider>
-  </BrowserRouter>
+    <BrowserRouter>
+      <Provider store={store}>
+      <CssBaseline/>
+        <ThemeProvider theme={theme}>
+          <App />
+        </ThemeProvider>
+      </Provider>
+    </BrowserRouter>
 );

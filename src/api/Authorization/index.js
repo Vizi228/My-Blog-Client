@@ -15,6 +15,7 @@ class Requests {
       fullName: res.fullName,
       email: res.email.trim(),
       password: res.password,
+      avatarUrl: res.avatarUrl || '',
     };
     const register = await instance.post('auth/register', obj);
     localStorage.setItem('mern-token', register.data.token);

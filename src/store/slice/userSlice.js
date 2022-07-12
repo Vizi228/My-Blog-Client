@@ -10,6 +10,9 @@ export const userSlice = createSlice({
   name: 'counter',
   initialState,
   reducers: {
+    setIsLoaded: (state) => {
+      state.isLoaded = true;
+    },
     setUser: (state, action) => {
       state.user = action.payload;
       state.isAuth = true;
@@ -22,6 +25,6 @@ export const userSlice = createSlice({
   },
 })
 
-export const { setUser, removeUser } = userSlice.actions
+export const { setUser, removeUser, setIsLoaded } = userSlice.actions
 
 export default userSlice.reducer

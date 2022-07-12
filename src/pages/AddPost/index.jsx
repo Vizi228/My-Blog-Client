@@ -6,7 +6,8 @@ import 'easymde/dist/easymde.min.css';
 import styles from './AddPost.module.scss';
 import { Upload } from '../../api/Upload';
 import { Posts } from '../../api/Posts';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export const AddPost = () => {
   const [value, setValue] = React.useState('');
@@ -16,18 +17,18 @@ export const AddPost = () => {
 
   const imageRef = React.useRef();
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const onChange = React.useCallback((value) => {
     setValue(value);
   }, []);
-
   const onChangeImage = async (e) => {
     try {
       const response = await Upload.uploadImage(e);
       setImageUrl(response.url);
     } catch (error) {
       console.warn(error);
-      alert('Error during uploading image');
+      alert(error.response.data.message);
     }
   };
   const onRemoveImage = () => {
@@ -41,9 +42,15 @@ export const AddPost = () => {
         tags,
         text: value,
       };
-      const { data } = await Posts.createPost(req);
-      const id = data._id;
-      navigate(`/posts/${id}`);
+      let response;
+      if (id) {
+        response = await Posts.updatePost(req, id);
+        navigate(`/posts/${id}`);
+      } else {
+        response = await Posts.createPost(req);
+        const pageId = response.data._id;
+        navigate(`/posts/${pageId}`);
+      }
     } catch (error) {
       console.warn(error);
       alert('Error during creating post');
@@ -64,6 +71,19 @@ export const AddPost = () => {
     }),
     [],
   );
+
+  useEffect(() => {
+    if (id) {
+      (async () => {
+        const { data } = await Posts.getPost(id);
+        setImageUrl(data.imageUrl);
+        setTags(data.tags.join(','));
+        setValue(data.text);
+        setTitle(data.title);
+        console.log(data);
+      })();
+    }
+  }, [id]);
 
   return (
     <Paper style={{ padding: 30 }}>

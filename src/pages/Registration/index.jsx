@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Avatar, Button, Paper, TextField, Typography } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import styles from './Registration.module.scss';
@@ -8,10 +8,13 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '../../store/slice/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { Auth } from '../../api/Authorization';
+import { Upload } from '../../api/Upload';
 
 export const Registration = () => {
+  const [imageUrl, setImageUrl] = React.useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const imageRef = useRef();
   const {
     register,
     handleSubmit,
@@ -22,22 +25,39 @@ export const Registration = () => {
   });
   const onSubmit = async (res) => {
     try {
-      const response = await Auth.register(res);
+      const response = await Auth.register({
+        ...res,
+        avatarUrl: `${process.env.REACT_APP_URL_KEY}${imageUrl}`,
+      });
       dispatch(setUser(response.data));
       navigate('/', { replace: true });
     } catch (error) {
       alert(error);
     }
   };
-
+  const onChangeImage = async (e) => {
+    try {
+      const response = await Upload.uploadProfileImage(e);
+      setImageUrl(response.url);
+    } catch (error) {
+      console.warn(error);
+      alert(error.response.data.message);
+    }
+  };
   return (
     <Paper classes={{ root: styles.root }}>
       <Typography classes={{ root: styles.title }} variant="h5">
         Создание аккаунта
       </Typography>
       <div className={styles.avatar}>
-        <Avatar sx={{ width: 100, height: 100 }} />
+        <Avatar
+          onClick={() => imageRef.current.click()}
+          src={`${process.env.REACT_APP_URL_KEY}${imageUrl}`}
+          sx={{ width: 100, height: 100 }}
+        />
+        <input type="file" ref={imageRef} hidden onChange={onChangeImage} />
       </div>
+
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
           className={styles.field}

@@ -47,7 +47,7 @@ export const FullPost = () => {
             },
           ]}
         />
-        <AddComment />
+        <AddComment postId={id} />
       </SideBlock>
     </>
   );

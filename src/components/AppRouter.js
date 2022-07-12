@@ -15,7 +15,9 @@ function AppRouter() {
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/posts/:id" element={<FullPost />}/>
+      <Route path="/posts/tags/:id" element={<Home />}/>
       {isAuth && <Route path="/write" element={<AddPost />}/>}
+      {isAuth && <Route path="/posts/:id/edit" element={<AddPost />}/>}
       <Route path="/login" element={<Login />}/>
       <Route path="/register" element={<Registration />}/>
       <Route path="*" element={<Navigate to='/' />}/>

@@ -15,18 +15,18 @@ import { useState } from 'react';
 import { Posts } from '../api/Posts';
 import { useSelector } from 'react-redux';
 import { useCallback } from 'react';
+import { Tags } from '../api/Tags';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export const Home = () => {
   const [posts, setPosts] = useState([]);
+  const [tags, setTags] = useState([]);
+  const [tabValue, setTabValue] = useState(0);
+  const navigate = useNavigate();
+  const { id } = useParams();
   const { user } = useSelector((state) => ({
     user: state.userSlice.user,
   }));
-  useEffect(() => {
-    (async () => {
-      const response = await Posts.getAllPosts();
-      setPosts(response.data);
-    })();
-  }, []);
 
   const deletePostItem = useCallback(
     async (id) => {
@@ -40,11 +40,45 @@ export const Home = () => {
     [posts],
   );
 
+  useEffect(() => {
+    (async () => {
+      try {
+        if (id) {
+          const postsResponse = await Posts.getTagsPosts(id, tabValue);
+          setPosts(postsResponse.data);
+        } else {
+          const postsResponse = await Posts.getAllPosts(tabValue);
+          setPosts(postsResponse.data);
+        }
+        const tagsResponse = await Tags.getTags();
+        setTags(tagsResponse.data);
+      } catch (error) {
+        alert('Ошибка при загрузке страницы');
+        console.log(error);
+      }
+    })();
+  }, [id, tabValue]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const tagsResponse = await Tags.getTags();
+        setTags(tagsResponse.data);
+      } catch (error) {
+        alert('Ошибка при загрузке страницы');
+        console.log(error);
+      }
+    })();
+  }, []);
   return (
     <>
-      <Tabs style={{ marginBottom: 15 }} value={0} aria-label="basic tabs example">
-        <Tab label="Новые" />
-        <Tab label="Популярные" />
+      <Tabs
+        style={{ marginBottom: 15 }}
+        onChange={(e, newValue) => setTabValue(newValue)}
+        value={tabValue}
+        aria-label="basic tabs example">
+        <Tab label="New" />
+        <Tab label="Popular" />
       </Tabs>
       <Grid container spacing={4}>
         <Grid xs={8} item>
@@ -60,14 +94,17 @@ export const Home = () => {
         <Grid xs={4} item>
           <SideBlock title="Тэги">
             <List>
-              <ListItem disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    <TagIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="react" />
-                </ListItemButton>
-              </ListItem>
+              {tags &&
+                tags.map((name) => (
+                  <ListItem onClick={() => navigate(`/posts/tags/${name}`)} disablePadding>
+                    <ListItemButton>
+                      <ListItemIcon>
+                        <TagIcon />
+                      </ListItemIcon>
+                      <ListItemText primary={`${name}`} />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
             </List>
           </SideBlock>
           <SideBlock title="Комментарии">
