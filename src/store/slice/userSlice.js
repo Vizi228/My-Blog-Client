@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import { checkAuth } from '../../services/auth';
 
 const initialState = {
   user: {},
@@ -7,7 +8,7 @@ const initialState = {
 }
 
 export const userSlice = createSlice({
-  name: 'counter',
+  name: 'user',
   initialState,
   reducers: {
     setIsLoaded: (state) => {
@@ -23,6 +24,21 @@ export const userSlice = createSlice({
       state.isAuth = false;
     }
   },
+  extraReducers: {
+    [checkAuth.pending.type]: (state) => {
+      state.isLoaded = false;
+    },
+    [checkAuth.fulfilled.type]: (state, action) => {
+      state.isLoaded = true;
+      if(action.payload) {
+        state.user = action.payload;
+        state.isAuth = true;
+      }
+    },
+    [checkAuth.rejected.type]: (state) => {
+      state.isLoaded = true;
+    },
+  }
 })
 
 export const { setUser, removeUser, setIsLoaded } = userSlice.actions

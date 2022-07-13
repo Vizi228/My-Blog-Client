@@ -9,11 +9,13 @@ import { setUser } from '../../store/slice/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { Auth } from '../../api/Authorization';
 import { Upload } from '../../api/Upload';
+import useError from '../../hooks/useError';
 
 export const Registration = () => {
   const [imageUrl, setImageUrl] = React.useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const handleError = useError();
   const imageRef = useRef();
   const {
     register,
@@ -32,7 +34,7 @@ export const Registration = () => {
       dispatch(setUser(response.data));
       navigate('/', { replace: true });
     } catch (error) {
-      alert(error);
+      handleError(error.response.data.message);
     }
   };
   const onChangeImage = async (e) => {
@@ -40,8 +42,7 @@ export const Registration = () => {
       const response = await Upload.uploadProfileImage(e);
       setImageUrl(response.url);
     } catch (error) {
-      console.warn(error);
-      alert(error.response.data.message);
+      handleError(error.response.data.message);
     }
   };
   return (

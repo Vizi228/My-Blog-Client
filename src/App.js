@@ -4,26 +4,27 @@ import { Header } from "./components/Header";
 import AppRouter from "./components/AppRouter";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setIsLoaded, setUser } from "./store/slice/userSlice";
-import { Auth } from "./api/Authorization";
+import { checkAuth } from "./services/auth";
 function App() {
   const dispatch = useDispatch();
   const { isLoaded } = useSelector((state) => ({
     isLoaded: state.userSlice.isLoaded
   }))
   useEffect(() => {
-    (async () => {
-      if(localStorage.getItem('mern-token')){
-        const response = await Auth.checkAuth()
-        dispatch(setUser(response.data))
-      } else {
-        dispatch(setIsLoaded())
-      }
-    })()
+    dispatch(checkAuth())
   }, [dispatch])
 
   if(!isLoaded) {
-    return
+    return (
+      <div className="preload-app">
+        <div className="lds-ring">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    )
   } 
   return (
     <>

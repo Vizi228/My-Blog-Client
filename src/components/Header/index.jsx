@@ -17,6 +17,7 @@ export const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem('mern-token');
     dispatch(removeUser());
+    navigate('/');
   };
 
   return (

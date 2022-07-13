@@ -11,6 +11,7 @@ import { UserInfo } from '../UserInfo';
 import { useNavigate, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { Posts } from '../../api/Posts';
+import useError from '../../hooks/useError';
 
 export const Post = ({
   _id,
@@ -27,6 +28,7 @@ export const Post = ({
   deletePostItem,
 }) => {
   const navigate = useNavigate();
+  const handleError = useError();
   const onRedirect = () => {
     if (!isFullPost) navigate(`/posts/${_id}`);
   };
@@ -35,19 +37,23 @@ export const Post = ({
     deletePostItem(_id);
   };
   const onRemoveFullPost = async (e) => {
-    e.stopPropagation();
-    await Posts.deletePost(_id);
-    navigate('/');
+    try {
+      e.stopPropagation();
+      await Posts.deletePost(_id);
+      navigate('/');
+    } catch (error) {
+      handleError('Error during removing post');
+    }
   };
   return (
     <div onClick={onRedirect} className={clsx(styles.root, { [styles.rootFull]: isFullPost })}>
       {isEditable && (
         <div className={styles.editButtons}>
-          <a href={`/posts/${_id}/edit`}>
+          <Link to={`/posts/${_id}/edit`}>
             <IconButton color="primary">
               <EditIcon />
             </IconButton>
-          </a>
+          </Link>
           {isFullPost ? (
             <IconButton onClick={(e) => onRemoveFullPost(e)}>
               <DeleteIcon />

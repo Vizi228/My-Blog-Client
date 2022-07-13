@@ -1,0 +1,33 @@
+$blue: #4361ee;
+.root {
+  position: relative;
+  &:hover {
+    box-shadow: 0 0 3px 1px $blue;
+
+    .editButtons {
+      opacity: 1;
+    }
+  }
+}
+.editButtons {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  background-color: rgba(255, 255, 255, 1);
+  border-radius: 10px;
+  opacity: 0;
+  transition: all 0.15s ease-in-out;
+}
+.form {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  button {
+    margin-left: 10px;
+  }
+}
+.preload {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

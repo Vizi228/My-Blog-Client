@@ -9,6 +9,7 @@ import { theme } from "./theme";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from 'react-redux'
 import { store } from "./store";
+import { SnackbarProvider } from 'notistack';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -16,9 +17,11 @@ root.render(
     <BrowserRouter>
       <Provider store={store}>
       <CssBaseline/>
+        <SnackbarProvider maxSnack={2}>
         <ThemeProvider theme={theme}>
           <App />
         </ThemeProvider>
+        </SnackbarProvider>
       </Provider>
     </BrowserRouter>
 );

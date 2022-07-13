@@ -8,13 +8,14 @@ import { Upload } from '../../api/Upload';
 import { Posts } from '../../api/Posts';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
+import useError from '../../hooks/useError';
 
 export const AddPost = () => {
   const [value, setValue] = React.useState('');
   const [title, setTitle] = React.useState('');
   const [tags, setTags] = React.useState('');
   const [imageUrl, setImageUrl] = React.useState('');
-
+  const handleError = useError();
   const imageRef = React.useRef();
   const navigate = useNavigate();
   const { id } = useParams();
@@ -27,14 +28,17 @@ export const AddPost = () => {
       const response = await Upload.uploadImage(e);
       setImageUrl(response.url);
     } catch (error) {
-      console.warn(error);
-      alert(error.response.data.message);
+      handleError(error.response.data.message);
     }
   };
   const onRemoveImage = () => {
     setImageUrl('');
   };
   const handleAddPost = async () => {
+    if (!title || !imageUrl || !tags || !value) {
+      handleError('Please, fill the from');
+      return;
+    }
     try {
       const req = {
         title,
@@ -52,8 +56,7 @@ export const AddPost = () => {
         navigate(`/posts/${pageId}`);
       }
     } catch (error) {
-      console.warn(error);
-      alert('Error during creating post');
+      handleError('Error during creating post');
     }
   };
   const options = React.useMemo(
@@ -61,7 +64,7 @@ export const AddPost = () => {
       spellChecker: false,
       maxHeight: '400px',
       autofocus: true,
-      placeholder: 'Введите текст...',
+      placeholder: 'Write the text...',
       status: false,
       autosave: {
         enabled: true,
@@ -71,7 +74,6 @@ export const AddPost = () => {
     }),
     [],
   );
-
   useEffect(() => {
     if (id) {
       (async () => {
@@ -95,12 +97,12 @@ export const AddPost = () => {
             alt="Uploaded"
           />
           <Button onClick={onRemoveImage} variant="contained" color="error" size="large">
-            Удалить
+            Delete
           </Button>
         </div>
       ) : (
         <Button onClick={() => imageRef.current.click()} variant="outlined" size="large">
-          Загрузить превью
+          Upload image
         </Button>
       )}
 
@@ -112,7 +114,7 @@ export const AddPost = () => {
         variant="standard"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Заголовок статьи..."
+        placeholder="Article's title..."
         fullWidth
       />
       <TextField
@@ -120,7 +122,7 @@ export const AddPost = () => {
         onChange={(e) => setTags(e.target.value)}
         classes={{ root: styles.tags }}
         variant="standard"
-        placeholder="Тэги"
+        placeholder="tag1,tag2"
         fullWidth
       />
       <SimpleMDE
@@ -132,9 +134,16 @@ export const AddPost = () => {
       />
       <div className={styles.buttons}>
         <Button onClick={handleAddPost} size="large" variant="contained">
-          Опубликовать
+          Publish
         </Button>
-        <Button size="large">Отмена</Button>
+        <Button
+          onClick={() => navigate('/')}
+          variant="contained"
+          sx={{ color: '#fff' }}
+          color="red"
+          size="large">
+          Cancel
+        </Button>
       </div>
     </Paper>
   );

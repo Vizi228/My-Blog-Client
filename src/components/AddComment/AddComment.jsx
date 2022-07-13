@@ -5,26 +5,34 @@ import styles from './AddComment.module.scss';
 import TextField from '@mui/material/TextField';
 import { Avatar, Button } from '@mui/material';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Comments } from '../../api/Comments';
+import { addComment } from '../../store/slice/commentSlice';
+import useError from '../../hooks/useError';
 
 export const AddComment = ({ postId }) => {
   const [value, setValue] = useState('');
+  const [isAdded, setIsAdded] = useState(true);
+  const dispatch = useDispatch();
+  const handleError = useError();
   const { user } = useSelector((state) => ({
     user: state.userSlice.user,
   }));
 
   const onAddComment = async () => {
+    if (!value) return;
     try {
       const req = {
         text: value.trim(),
         postId,
       };
-      await Comments.create(req);
+      setIsAdded(false);
+      const { data } = await Comments.create(req);
+      dispatch(addComment(data));
       setValue('');
+      setIsAdded(true);
     } catch (error) {
-      alert(error.response.data.message);
-      console.log(error);
+      handleError(error.response.data.message);
     }
   };
   return (
@@ -41,7 +49,7 @@ export const AddComment = ({ postId }) => {
             multiline
             fullWidth
           />
-          <Button onClick={onAddComment} variant="contained">
+          <Button disabled={!isAdded} onClick={onAddComment} variant="contained">
             Отправить
           </Button>
         </div>

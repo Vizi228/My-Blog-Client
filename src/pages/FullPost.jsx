@@ -7,46 +7,47 @@ import { AddComment } from '../components/AddComment/AddComment';
 import { Posts } from '../api/Posts';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import Skeleton from '@mui/material/Skeleton';
+import useError from '../hooks/useError';
 
 export const FullPost = () => {
   const [post, setPost] = useState();
+  const [isLoaded, setIsLoaded] = useState(true);
   const { id } = useParams();
-  const { user } = useSelector((state) => ({
+  const handleError = useError();
+  const { user, comments } = useSelector((state) => ({
     user: state.userSlice.user,
+    comments: state.commentSlice.comments,
   }));
   useEffect(() => {
     (async () => {
-      const response = await Posts.getPost(id);
-      setPost(response.data);
+      try {
+        setIsLoaded(false);
+        const response = await Posts.getPost(id);
+        setPost(response.data);
+      } catch (error) {
+        handleError(error.response.data.message);
+      } finally {
+        setIsLoaded(true);
+      }
     })();
-  }, [id]);
+  }, [id, handleError]);
+  if (!isLoaded) {
+    return <Skeleton animation="wave" variant="rectangular" width={'80vw'} height={'80vh'} />;
+  }
   return (
     <>
       {post && (
-        <Post {...post} isEditable={user._id === post.user._id} isFullPost>
+        <Post
+          commentsCount={comments.filter((item) => item.postId === post._id).length}
+          {...post}
+          isEditable={user._id === post.user._id}
+          isFullPost>
           {post.text}
         </Post>
       )}
-
-      <SideBlock title="Комментарии">
-        <SideComments
-          items={[
-            {
-              user: {
-                fullName: 'Вася Пупкин',
-                avatarUrl: 'https://mui.com/static/images/avatar/1.jpg',
-              },
-              text: 'Это тестовый комментарий',
-            },
-            {
-              user: {
-                fullName: 'Иван Иванов',
-                avatarUrl: 'https://mui.com/static/images/avatar/2.jpg',
-              },
-              text: 'When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top',
-            },
-          ]}
-        />
+      <SideComments postId={id} />
+      <SideBlock>
         <AddComment postId={id} />
       </SideBlock>
     </>

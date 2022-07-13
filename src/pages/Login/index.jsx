@@ -8,10 +8,12 @@ import { useDispatch } from 'react-redux';
 import { setUser } from '../../store/slice/userSlice';
 import { useNavigate } from 'react-router-dom';
 import { Auth } from '../../api/Authorization';
+import useError from '../../hooks/useError';
 
 export const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const handleError = useError();
   const {
     register,
     handleSubmit,
@@ -26,7 +28,7 @@ export const Login = () => {
       dispatch(setUser(response.data));
       navigate('/', { replace: true });
     } catch (e) {
-      alert('Неправильный логин или пароль');
+      handleError('Wrong password or login');
     }
   };
   return (
