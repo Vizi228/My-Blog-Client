@@ -20,7 +20,10 @@ export const AddComment = ({ postId }) => {
   }));
 
   const onAddComment = async () => {
-    if (!value) return;
+    if (!value) {
+      handleError('Fill the field');
+      return;
+    }
     try {
       const req = {
         text: value.trim(),

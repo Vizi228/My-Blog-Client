@@ -1,8 +1,11 @@
 import React from 'react';
 import styles from './UserInfo.module.scss';
 import Avatar from '@mui/material/Avatar';
+import { getDate } from '../../utils/helpers/getDate';
+import { memo } from 'react';
 
-export const UserInfo = ({ avatarUrl, fullName, additionalText }) => {
+export const UserInfo = memo(({ avatarUrl, fullName, additionalText }) => {
+  const date = getDate(additionalText);
   return (
     <div className={styles.root}>
       {avatarUrl ? (
@@ -13,8 +16,8 @@ export const UserInfo = ({ avatarUrl, fullName, additionalText }) => {
 
       <div className={styles.userDetails}>
         <span className={styles.userName}>{fullName}</span>
-        <span className={styles.additional}>{additionalText}</span>
+        <span className={styles.additional}>{date}</span>
       </div>
     </div>
   );
-};
+});

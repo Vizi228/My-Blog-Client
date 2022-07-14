@@ -10,7 +10,7 @@ import { useSelector } from 'react-redux';
 import Skeleton from '@mui/material/Skeleton';
 import useError from '../hooks/useError';
 
-export const FullPost = () => {
+const FullPost = () => {
   const [post, setPost] = useState();
   const [isLoaded, setIsLoaded] = useState(true);
   const { id } = useParams();
@@ -53,3 +53,5 @@ export const FullPost = () => {
     </>
   );
 };
+
+export default FullPost;
