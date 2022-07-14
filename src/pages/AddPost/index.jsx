@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, Paper, TextField } from '@mui/material';
-import SimpleMDE from 'react-simplemde-editor';
 
 import 'easymde/dist/easymde.min.css';
 import styles from './AddPost.module.scss';
@@ -9,8 +8,10 @@ import { Posts } from '../../api/Posts';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import useError from '../../hooks/useError';
+import FormField from '../../components/FormField/FormField';
+import Editor from '../../components/Editor';
 
-export const AddPost = () => {
+const AddPost = () => {
   const [value, setValue] = React.useState('');
   const [title, setTitle] = React.useState('');
   const [tags, setTags] = React.useState('');
@@ -109,29 +110,21 @@ export const AddPost = () => {
       <input type="file" ref={imageRef} hidden onChange={onChangeImage} />
       <br />
       <br />
-      <TextField
-        classes={{ root: styles.title }}
-        variant="standard"
+      <FormField
+        styles={styles.title}
         value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Article's title..."
-        fullWidth
+        setValue={setTitle}
+        placeholder={"Article's title..."}
+        isFullWidth
       />
-      <TextField
+      <FormField
+        styles={styles.tags}
         value={tags}
-        onChange={(e) => setTags(e.target.value)}
-        classes={{ root: styles.tags }}
-        variant="standard"
-        placeholder="tag1,tag2"
-        fullWidth
+        setValue={setTags}
+        placeholder={'tag1,tag2'}
+        isFullWidth
       />
-      <SimpleMDE
-        id="editor"
-        className={styles.editor}
-        value={value}
-        onChange={onChange}
-        options={options}
-      />
+      <Editor styles={styles.editor} value={value} onChange={onChange} options={options} />
       <div className={styles.buttons}>
         <Button onClick={handleAddPost} size="large" variant="contained">
           Publish
@@ -148,3 +141,4 @@ export const AddPost = () => {
     </Paper>
   );
 };
+export default AddPost;

@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { SideBlock } from './SideBlock';
 import { List, Skeleton } from '@mui/material';
 import useError from '../hooks/useError';
+import { memo } from 'react';
 
 function HomeTags() {
   const [tags, setTags] = useState([]);
@@ -38,7 +39,7 @@ function HomeTags() {
     );
   }
   return (
-    <SideBlock title="Тэги">
+    <SideBlock title="Tags">
       <List>
         {tags &&
           tags.map((name) => (
@@ -56,4 +57,4 @@ function HomeTags() {
   );
 }
 
-export default HomeTags;
+export default memo(HomeTags);

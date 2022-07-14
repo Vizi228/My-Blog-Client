@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { memo, useCallback, useEffect } from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
@@ -15,7 +15,7 @@ import { SideBlock } from '../SideBlock';
 import Preloader from '../Preloader';
 import useError from '../../hooks/useError';
 
-export const SideComments = ({ postId }) => {
+export const SideComments = memo(({ postId }) => {
   const { items, isLoaded, user } = useSelector((state) => ({
     items: state.commentSlice.comments,
     isLoaded: state.commentSlice.isLoaded,
@@ -43,7 +43,7 @@ export const SideComments = ({ postId }) => {
     [dispatch, handleError],
   );
   useEffect(() => {
-    dispatch(fetchComments(postId || null));
+    dispatch(fetchComments(postId || false));
   }, [dispatch, postId]);
   if (!isLoaded) {
     if (postId) {
@@ -52,7 +52,7 @@ export const SideComments = ({ postId }) => {
     return <Skeleton animation="wave" variant="rectangular" width={350} height={450} />;
   }
   return (
-    <SideBlock title="Комментарии">
+    <SideBlock title="Comments">
       <List>
         {items &&
           items.map((obj, i) => (
@@ -77,4 +77,4 @@ export const SideComments = ({ postId }) => {
       </List>
     </SideBlock>
   );
-};
+});

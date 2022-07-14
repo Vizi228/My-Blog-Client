@@ -1,10 +1,12 @@
-import { FullPost } from "../pages/FullPost";
 import { Home } from "../pages/Home";
-import { AddPost } from "../pages/AddPost";
-import { Login } from "../pages/Login";
-import { Registration } from "../pages/Registration";
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useSelector } from "react-redux";
+import { lazy, Suspense } from "react";
+
+const LazyFullPost = lazy(() => import("../pages/FullPost"));
+const LazyAddPost = lazy(() => import("../pages/AddPost"));
+const LazyLogin = lazy(() => import("../pages/Login"));
+const LazyRestration = lazy(() => import("../pages/Registration"));
 
 function AppRouter() {
   const { isAuth } = useSelector((state) => ({
@@ -12,16 +14,19 @@ function AppRouter() {
   }));
   return (
     <>
+    <Suspense fallback={<div>Loading...</div>}>
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/posts/:id" element={<FullPost />}/>
+      <Route path="/posts/:id" element={<LazyFullPost />}/>
       <Route path="/posts/tags/:id" element={<Home />}/>
-      {isAuth && <Route path="/write" element={<AddPost />}/>}
-      {isAuth && <Route path="/posts/:id/edit" element={<AddPost />}/>}
-      <Route path="/login" element={<Login />}/>
-      <Route path="/register" element={<Registration />}/>
+      {isAuth && <Route path="/write" element={<LazyAddPost />}/>}
+      {isAuth && <Route path="/posts/:id/edit" element={<LazyAddPost />}/>}
+      <Route path="/login" element={<LazyLogin />}/>
+      <Route path="/register" element={<LazyRestration />}/>
       <Route path="*" element={<Navigate to='/' />}/>
     </Routes>
+    </Suspense>
+    
     </>
   );
 }

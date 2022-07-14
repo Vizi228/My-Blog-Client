@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { Auth } from '../../api/Authorization';
 import useError from '../../hooks/useError';
 
-export const Login = () => {
+const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleError = useError();
@@ -34,7 +34,7 @@ export const Login = () => {
   return (
     <Paper classes={{ root: styles.root }}>
       <Typography classes={{ root: styles.title }} variant="h5">
-        Вход в аккаунт
+        Login to account
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
@@ -52,7 +52,7 @@ export const Login = () => {
           error={Boolean(errors.password?.message)}
           helperText={errors.password?.message}
           type="password"
-          label="Пароль"
+          label="Password"
           fullWidth
           {...register('password')}
         />
@@ -63,3 +63,5 @@ export const Login = () => {
     </Paper>
   );
 };
+
+export default Login;
