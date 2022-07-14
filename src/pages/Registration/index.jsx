@@ -27,14 +27,18 @@ export const Registration = () => {
   });
   const onSubmit = async (res) => {
     try {
-      const response = await Auth.register({
-        ...res,
-        avatarUrl: `${process.env.REACT_APP_URL_KEY}${imageUrl}`,
-      });
+      let obj;
+      if (imageUrl) {
+        obj = { ...res, avatarUrl: `${process.env.REACT_APP_URL_KEY}${imageUrl}` };
+      } else {
+        obj = { ...res };
+      }
+      const response = await Auth.register(obj);
       dispatch(setUser(response.data));
       navigate('/', { replace: true });
     } catch (error) {
-      handleError(error.response.data.message);
+      console.log(error);
+      handleError(error.response.data.value);
     }
   };
   const onChangeImage = async (e) => {
