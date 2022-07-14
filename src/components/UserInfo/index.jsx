@@ -7,11 +7,7 @@ export const UserInfo = ({ avatarUrl, fullName, additionalText }) => {
   return (
     <div className={styles.root}>
       {avatarUrl ? (
-        <img
-          className={styles.avatar}
-          src={`${process.env.REACT_APP_URL_KEY}${avatarUrl}`}
-          alt={fullName}
-        />
+        <img className={styles.avatar} src={avatarUrl} alt={fullName} />
       ) : (
         <Avatar>{fullName && fullName[0]}</Avatar>
       )}
