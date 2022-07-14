@@ -27,15 +27,11 @@ const Registration = () => {
   });
   const onSubmit = async (res) => {
     try {
-      let obj;
-      if (imageUrl) {
-        obj = {
-          ...res,
-          avatarUrl: `${process.env.REACT_APP_URL_KEY}${imageUrl}`,
-        };
-      } else {
-        obj = { ...res };
-      }
+      if (!imageUrl) handleError('Please, put the image');
+      const obj = {
+        ...res,
+        avatarUrl: `${process.env.REACT_APP_URL_KEY}${imageUrl}`,
+      };
       const response = await Auth.register(obj);
       dispatch(setUser(response.data));
       navigate('/', { replace: true });
