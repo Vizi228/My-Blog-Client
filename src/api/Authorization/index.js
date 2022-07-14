@@ -22,7 +22,7 @@ class Requests {
     return register
   }
   async checkAuth() {
-    const check = await instance.get('/auth/me');
+    const check = await instance.get('auth/me');
     return check
   }
 }
