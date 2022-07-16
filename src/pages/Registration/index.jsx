@@ -27,7 +27,10 @@ const Registration = () => {
   });
   const onSubmit = async (res) => {
     try {
-      if (!imageUrl) handleError('Please, put the image');
+      if (!imageUrl){
+        handleError('Please, put the image');
+        return
+      }
       const obj = {
         ...res,
         avatarUrl: `${process.env.REACT_APP_URL_KEY}${imageUrl}`,
