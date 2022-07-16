@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Paper, TextField } from '@mui/material';
+import { Button, Paper } from '@mui/material';
 
 import 'easymde/dist/easymde.min.css';
 import styles from './AddPost.module.scss';

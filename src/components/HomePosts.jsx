@@ -1,13 +1,18 @@
 import { Skeleton } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
 import { Posts } from '../api/Posts';
 import useError from '../hooks/useError';
+import { getQuery } from '../utils/helpers/getQuery';
 import { Post } from './Post';
 
 export default function HomePosts({ tabValue, id }) {
   const [posts, setPosts] = useState([]);
   const [isLoaded, setLoaded] = useState(true);
+  const [searchParams] = useSearchParams();
+  const allSearchParams = useMemo(() => Object.fromEntries([...searchParams]), [searchParams]);
   const handleError = useError();
   const { user, comments } = useSelector((state) => ({
     user: state.userSlice.user,
@@ -29,10 +34,10 @@ export default function HomePosts({ tabValue, id }) {
       try {
         setLoaded(false);
         if (id) {
-          const postsResponse = await Posts.getTagsPosts(id, tabValue);
+          const postsResponse = await Posts.getTagsPosts(id, getQuery(allSearchParams));
           setPosts(postsResponse.data);
         } else {
-          const postsResponse = await Posts.getAllPosts(tabValue);
+          const postsResponse = await Posts.getAllPosts(getQuery(allSearchParams));
           setPosts(postsResponse.data);
         }
       } catch (error) {
@@ -41,7 +46,7 @@ export default function HomePosts({ tabValue, id }) {
         setLoaded(true);
       }
     })();
-  }, [id, tabValue, handleError]);
+  }, [id, tabValue, handleError, allSearchParams]);
   if (!isLoaded) {
     return [...Array(5)].map((item, i) => (
       <div key={i} style={{ marginTop: 15 }}>

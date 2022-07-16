@@ -1,21 +1,13 @@
 import { instance } from "..";
 
 class Post {
-  async getAllPosts(tabValue) {
-    if(!tabValue) {
-      const data = await instance.get('posts');
+  async getAllPosts(query) {
+      const data = await instance.get(`posts${query}`);
       return data
-    }
-    const data = await instance.get(`posts/popular`);
-    return data
   }
-  async getTagsPosts(tag, tabValue) {
-    if(!tabValue) {
-      const data = await instance.get(`posts/tags/${tag}`);
+  async getTagsPosts(tag, query) {
+      const data = await instance.get(`posts/tags/${tag}${query}`);
       return data
-    }
-    const data = await instance.get(`posts/popular/tags/${tag}`);
-    return data
   }
   async getPost(id) {
     const data = await instance.get(`posts/${id}`);

@@ -67,7 +67,7 @@ export const Post = ({
       )}
       <img
         className={clsx(styles.image, { [styles.imageFull]: isFullPost })}
-        src={`${process.env.REACT_APP_URL_KEY}${imageUrl}`}
+        src={`https://myroslav-blog.herokuapp.com${imageUrl}`}
         alt={title}
       />
       <div className={styles.wrapper}>
