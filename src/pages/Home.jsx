@@ -4,24 +4,28 @@ import Tab from '@mui/material/Tab';
 import Grid from '@mui/material/Grid';
 import { SideComments } from '../components/SideComments';
 import { useState } from 'react';
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import HomePosts from '../components/HomePosts';
 import HomeTags from '../components/HomeTags';
 import { tabs } from '../utils/consts';
+import { Button } from '@mui/material';
+import { useMemo } from 'react';
+import SearchParamsNavigate from '../hoc/SearchParamsNavigate';
 
 export const Home = () => {
   const { id } = useParams();
   const [tabValue, setTabValue] = useState(0);
+  const [limit, setLimit] = useState(5);
   const { pathname } = useLocation();
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const allSearchParams = Object.fromEntries([...searchParams]);
+  const allSearchParams = useMemo(() => Object.fromEntries([...searchParams]), [searchParams]);
+
   useEffect(() => {
     if (!allSearchParams.length > 0) {
       setTabValue(0);
-      setSearchParams('sort=all');
+      setSearchParams(`sort=all&limit=${limit}`);
     }
-  }, [pathname, setSearchParams, allSearchParams.length]);
+  }, [pathname, setSearchParams, allSearchParams.length, limit]);
   return (
     <>
       <Tabs
@@ -31,16 +35,17 @@ export const Home = () => {
         aria-label="basic tabs example">
         {tabs &&
           tabs.map((tab) => (
-            <Tab
-              onClick={() => navigate(`${pathname}?sort=${tab.value}`)}
-              key={tab.value}
-              label={tab.label}
-            />
+            <SearchParamsNavigate>
+              <Tab key={tab.value} label={tab.label} />
+            </SearchParamsNavigate>
           ))}
       </Tabs>
       <Grid container spacing={4}>
         <Grid xs={8} item>
           <HomePosts id={id} tabValue={tabValue} />
+          <Button onClick={() => setLimit((prev) => prev + 5)} variant="contained">
+            Get another posts
+          </Button>
         </Grid>
         <Grid xs={4} item>
           <HomeTags />

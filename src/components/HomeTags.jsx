@@ -6,16 +6,15 @@ import TagIcon from '@mui/icons-material/Tag';
 import ListItemText from '@mui/material/ListItemText';
 import { useState } from 'react';
 import { Tags } from '../api/Tags';
-import { useNavigate } from 'react-router-dom';
 import { SideBlock } from './SideBlock';
 import { List, Skeleton } from '@mui/material';
 import useError from '../hooks/useError';
 import { memo } from 'react';
+import SearchParamsNavigate from '../hoc/SearchParamsNavigate';
 
 function HomeTags() {
   const [tags, setTags] = useState([]);
   const [isLoaded, setLoaded] = useState(true);
-  const navigate = useNavigate();
   const handleError = useError();
 
   useEffect(() => {
@@ -43,14 +42,16 @@ function HomeTags() {
       <List>
         {tags &&
           tags.map((name) => (
-            <ListItem key={name} onClick={() => navigate(`/posts/tags/${name}`)} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  <TagIcon />
-                </ListItemIcon>
-                <ListItemText primary={`${name}`} />
-              </ListItemButton>
-            </ListItem>
+            <SearchParamsNavigate path={`/posts/tags/${name}`}>
+              <ListItem key={name} disablePadding>
+                <ListItemButton>
+                  <ListItemIcon>
+                    <TagIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={`${name}`} />
+                </ListItemButton>
+              </ListItem>
+            </SearchParamsNavigate>
           ))}
       </List>
     </SideBlock>

@@ -1,5 +1,5 @@
 export const getQuery = (query) => {
-  const queryParams = Object.entries(query).reverse();
+  const queryParams = Object.entries(query);
   console.log(queryParams)
   let str = '?';
   for(let i = 0; i < queryParams.length; i++) {

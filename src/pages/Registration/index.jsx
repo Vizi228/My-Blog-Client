@@ -27,9 +27,9 @@ const Registration = () => {
   });
   const onSubmit = async (res) => {
     try {
-      if (!imageUrl){
+      if (!imageUrl) {
         handleError('Please, put the image');
-        return
+        return;
       }
       const obj = {
         ...res,

@@ -6,6 +6,7 @@ import { Container } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { removeUser } from '../../store/slice/userSlice';
+import SearchParamsNavigate from '../../hoc/SearchParamsNavigate';
 
 export const Header = () => {
   const dispatch = useDispatch();
@@ -24,9 +25,9 @@ export const Header = () => {
     <div className={styles.root}>
       <Container maxWidth="lg">
         <div className={styles.inner}>
-          <Link className={styles.logo} to="/">
+          <SearchParamsNavigate className={styles.logo} path={'/'}>
             <div>MYROSLAV BLOG</div>
-          </Link>
+          </SearchParamsNavigate>
           <div className={styles.buttons}>
             {isAuth ? (
               <>
