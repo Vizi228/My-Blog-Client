@@ -19,7 +19,6 @@ export const Home = () => {
   const { pathname } = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const allSearchParams = useMemo(() => Object.fromEntries([...searchParams]), [searchParams]);
-
   useEffect(() => {
     if (!allSearchParams.length > 0) {
       setTabValue(0);
@@ -42,10 +41,7 @@ export const Home = () => {
       </Tabs>
       <Grid container spacing={4}>
         <Grid xs={8} item>
-          <HomePosts id={id} tabValue={tabValue} />
-          <Button onClick={() => setLimit((prev) => prev + 5)} variant="contained">
-            Get another posts
-          </Button>
+          <HomePosts id={id} tabValue={tabValue} limit={limit} setLimit={setLimit} />
         </Grid>
         <Grid xs={4} item>
           <HomeTags />

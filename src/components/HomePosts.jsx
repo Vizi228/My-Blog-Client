@@ -1,4 +1,4 @@
-import { Skeleton } from '@mui/material';
+import { Button, Skeleton } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
@@ -8,7 +8,7 @@ import useError from '../hooks/useError';
 import { getQuery } from '../utils/helpers/getQuery';
 import { Post } from './Post';
 
-export default function HomePosts({ tabValue, id }) {
+export default function HomePosts({ tabValue, id, limit, setLimit }) {
   const [posts, setPosts] = useState([]);
   const [isLoaded, setLoaded] = useState(true);
   const [searchParams] = useSearchParams();
@@ -29,6 +29,11 @@ export default function HomePosts({ tabValue, id }) {
     },
     [posts, handleError],
   );
+  const handleLimit = () => {
+    if (limit === posts.length) {
+      setLimit((prev) => prev + 5);
+    }
+  };
   useEffect(() => {
     (async () => {
       try {
@@ -66,6 +71,11 @@ export default function HomePosts({ tabValue, id }) {
             isEditable={user._id === post.user._id}
           />
         ))}
+      {limit === posts.length && (
+        <Button onClick={handleLimit} variant="contained">
+          Get another posts
+        </Button>
+      )}
     </>
   );
 }
